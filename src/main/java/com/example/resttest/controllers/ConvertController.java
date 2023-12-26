@@ -70,15 +70,15 @@ public class ConvertController {
             }
         }
 
-        value=(String) value;
+
         if(correct){
             LocalDateTime t=LocalDateTime.now();
-            Result result=new Result(oldValue,value);
+            Result result=new Result(type,oldValue,value);
             resultRepository.save(result);
         }
         else {
             LocalDateTime t=LocalDateTime.now();
-            Result result=new Result(oldValue,"Error");
+            Result result=new Result(type,oldValue,"Error");
             resultRepository.save(result);
         }
 

@@ -8,6 +8,7 @@ CREATE TABLE IF NOT EXISTS allData.user (
 );
 CREATE TABLE IF NOT EXISTS allData.result(
     id BIGSERIAL PRIMARY KEY,
+    type TEXT,
     first TEXT,
     second TEXT,
     time timestamp without time zone
