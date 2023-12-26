@@ -6,6 +6,7 @@ import com.example.resttest.models.Result;
 import com.example.resttest.models.Users;
 import com.example.resttest.repository.ResultRepository;
 import com.example.resttest.repository.UserRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 
+@Slf4j
 @RestController
 public class ConvertController {
 
@@ -34,6 +36,7 @@ public class ConvertController {
         repository.save(user);
     }
 
+
     @GetMapping("/convert")
     @PreAuthorize("hasAuthority('ROLE_USER')")
     public String convert(@RequestParam("type") String type, @RequestParam("value") String value) {
@@ -46,19 +49,19 @@ public class ConvertController {
 
         switch (type){
             case "StringToNumber"->{
+
+                value=TextToNumber.Convert(value).toString();
+                correct=TextToNumber.correct;
+            }
+            case "NumberToString"->{
                 try {
                     long num = Long.parseLong(value);
-
                 } catch (NumberFormatException e) {
                     TextToNumber.correct=false;
                     correct=false;
                     break;
                 }
                 TextToNumber.correct=true;
-                value=TextToNumber.Convert(value).toString();
-                correct=TextToNumber.correct;
-            }
-            case "NumberToString"->{
                 value=value.replaceAll(" ", "");
                 value=NumberToText.words(Long.parseLong(value));
             }

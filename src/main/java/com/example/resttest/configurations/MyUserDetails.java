@@ -1,24 +1,21 @@
 package com.example.resttest.configurations;
 
 import com.example.resttest.models.Users;
-import com.example.resttest.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 
 
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.stream.Collectors;
 
-public class myUserDetails implements UserDetails {
+public class MyUserDetails implements UserDetails {
 
     private Users user;
 
 
-    public myUserDetails(Users user){
+    public MyUserDetails(Users user){
         this.user = user;
 
     }

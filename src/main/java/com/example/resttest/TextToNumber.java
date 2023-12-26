@@ -1,9 +1,12 @@
 package com.example.resttest;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Objects;
 
+@Slf4j
 public class TextToNumber {
 
 
@@ -38,60 +41,32 @@ public class TextToNumber {
         string=string.toLowerCase();
         ArrayList<String> splitString = new ArrayList<String>(Arrays.asList(string.split(" ")));
         ArrayList<String> resultArray=new ArrayList<>();
-        System.out.println("Массив  " + splitString.toString());
+        log.info("Массив  " + splitString.toString());
 
 
         if(splitString.size()==1 && splitString.get(0).equals("ноль")){
             return 0L;
         }
-        for (int i = 0; i < splitString.size(); i++) {
-            if (haveName(0, splitString.get(i))) {
-                templist = new ArrayList<>(splitString.subList(0, i));
-                splitString = new ArrayList<>(splitString.subList(i + 1, splitString.size()));
-                System.out.println("Слова миллиардов" + templist);
 
+        for(int j=0;j<3;j++) {
+            templist=new ArrayList<>();
+            for (int i = 0; i < splitString.size(); i++) {
+                if (haveName(j, splitString.get(i))) {
+                    templist = new ArrayList<>(splitString.subList(0, i));
+                    splitString = new ArrayList<>(splitString.subList(i + 1, splitString.size()));
+                    log.info("Слова" + templist);
 
-                break;
+                    break;
+                }
             }
-
+            resultArray.add(groupsNumber(templist));
         }
 
-        resultArray.add(groupsNumber(templist));
-        templist=new ArrayList<>();
-        for (int i = 0; i < splitString.size(); i++) {
-            if (haveName(1, splitString.get(i))) {
-                templist = new ArrayList<>(splitString.subList(0, i));
-                splitString = new ArrayList<>(splitString.subList(i + 1, splitString.size()));
-                System.out.println("Слова миллионов" + templist);
 
-
-                break;
-            }
-        }
-        resultArray.add(groupsNumber(templist));
-        templist=new ArrayList<>();
-        for (int i = 0; i < splitString.size(); i++) {
-            if (haveName(2, splitString.get(i))) {
-                templist = new ArrayList<>(splitString.subList(0, i));
-                splitString = new ArrayList<>(splitString.subList(i + 1, splitString.size()));
-                System.out.println("Слова тысяч" + templist);
-
-                break;
-            }
-        }
-        resultArray.add(groupsNumber(templist));
-        System.out.println("Остаток" + splitString);
         resultArray.add(groupsNumber(splitString));
-
-
-
-        System.out.println("Остаток" + resultArray);
-        addZeros(resultArray);
-
-        System.out.println("Остаток" + resultArray);
-
+        addZeros(resultArray);//добавление нулей
         String numberAsString = resultArray.get(0)+resultArray.get(1)+resultArray.get(2)+resultArray.get(3);
-        //убрать
+
         return Long.parseLong(numberAsString);
     }
 
@@ -111,55 +86,78 @@ public class TextToNumber {
     private static String groupsNumber(ArrayList<String> groupNumber){
 
         if(groupNumber.isEmpty())return "000";
-        int result=0;
+
         //проверка и добавление сотен
         if(findInAllCombination(groupNumber.get(0),2)!=-1){
-            result+=findInAllCombination(groupNumber.get(0),2)*100;
-            if(groupNumber.size()==1)return String.valueOf(result);
-
-
-            if(findInAllCombination(groupNumber.get(1),1)!=-1 ){//проверка или добавление десятков
-                result+=(findInAllCombination(groupNumber.get(1),1)*10);
-                if(groupNumber.size()==2)return String.valueOf(result);
-
-                if(findInAllCombination(groupNumber.get(2),0)!=-1){//проверка или добавление единиц
-                    //учесть падежи один и два
-                    result+=findInAllCombination(groupNumber.get(2),0);
-                    return String.valueOf(result);
-                }
-
-            } else if (findInAllCombination(groupNumber.get(1),0)!=-1) {//проверка или добавление единиц
-                //учесть падежи один и два
-                result+=findInAllCombination(groupNumber.get(1),0);
-                return String.valueOf(result);
-
-            } else if (findInNumber11to19(groupNumber.get(1))!=-1) {//проверка или добавление "неудобных" числел
-                result+=findInNumber11to19(groupNumber.get(1))+10;
-                return String.valueOf(result);
-            }
+            return threeSigns(groupNumber);
         }
         else if(findInAllCombination(groupNumber.get(0),1)!=-1){
-            result+=findInAllCombination(groupNumber.get(0),1)*10;
-            if(groupNumber.size()==1)return String.valueOf(result);
-
-            //Мейби тут не нужен иф
-            if(findInAllCombination(groupNumber.get(1),0)!=-1){
-                result+=findInAllCombination(groupNumber.get(1),0);
-            }
+            return twoSigns(groupNumber);
         } else if (findInNumber11to19(groupNumber.get(0))!=-1) {
-            result+=findInNumber11to19(groupNumber.get(0))+10;
-            return String.valueOf(result);
+            return specialSigns(groupNumber);
         }
         else {
-            result+=findInAllCombination(groupNumber.get(0),0);
+            //ненужный элс но ради понимания логики оставил
+            return oneSigns(groupNumber);
         }
 
+        //return String.valueOf(result);
+
+    }
+    //если есть сотни
+    private static String threeSigns(ArrayList<String> groupNumber){
+        int result=0;
+        result+=findInAllCombination(groupNumber.get(0),2)*100;
+        if(groupNumber.size()==1)return String.valueOf(result);
+
+
+        if(findInAllCombination(groupNumber.get(1),1)!=-1 ){//проверка или добавление десятков
+            result+=(findInAllCombination(groupNumber.get(1),1)*10);
+            if(groupNumber.size()==2)return String.valueOf(result);
+
+            if(findInAllCombination(groupNumber.get(2),0)!=-1){//проверка или добавление единиц
+                //учесть падежи один и два
+                result+=findInAllCombination(groupNumber.get(2),0);
+                return String.valueOf(result);
+            }
+
+        } else if (findInAllCombination(groupNumber.get(1),0)!=-1) {//проверка или добавление единиц
+            //учесть падежи один и два
+            result+=findInAllCombination(groupNumber.get(1),0);
+            return String.valueOf(result);
+
+        } else if (findInNumber11to19(groupNumber.get(1))!=-1) {//проверка или добавление "неудобных" числел
+            result+=findInNumber11to19(groupNumber.get(1))+10;
+            return String.valueOf(result);
+        }
+        return "";
+    }
+
+    //если нет сотен и спец цифр
+    private static String twoSigns(ArrayList<String> groupNumber){
+        int result=0;
+        result+=findInAllCombination(groupNumber.get(0),1)*10;
+        if(groupNumber.size()==1)return String.valueOf(result);
+
+        //Мейби тут не нужен иф
+        if(findInAllCombination(groupNumber.get(1),0)!=-1){
+            result+=findInAllCombination(groupNumber.get(1),0);
+        }
+        return "";
+    }
+
+    //спец цифры (11--19)
+    private static String specialSigns(ArrayList<String> groupNumber){
+        int result=0;
+        result+=findInNumber11to19(groupNumber.get(0))+10;
         return String.valueOf(result);
+    }
 
-
-
-
-
+    //одна цифра
+    private static String oneSigns(ArrayList<String> groupNumber){
+        int result=0;
+        result=findInAllCombination(groupNumber.get(0),0);
+        return String.valueOf(result);
     }
     private static int findInAllCombination(String text,int digit){
         for(int i=0;i<allCombination[digit].length;i++){

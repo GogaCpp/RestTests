@@ -36,10 +36,10 @@ public class NumberToText {
         int billion = (int) (number / 1000000000);
         int million = (int) (number - (billion * 1000000000)) / 1000000;
         int thousand = (int) (number - (billion * 1000000000) - (million * 1000000)) / 1000;
-        int toThousand = (int) (number % 1000);
+        int lessThousand = (int) (number % 1000);
 
 
-        result = result + partsOfWords(billion, 0)+ partsOfWords(million, 1)+ partsOfWords(thousand, 2)+ partsOfWords(toThousand, 3);
+        result = result + partsOfWords(billion, 0)+ partsOfWords(million, 1)+ partsOfWords(thousand, 2)+ partsOfWords(lessThousand, 3);
         return result;
 
     }
@@ -48,43 +48,42 @@ public class NumberToText {
 
         int hundreds = numericalValue / 100;
 
-        int decimal = (numericalValue - (hundreds * 100)) / 10;
+        int tens = (numericalValue - (hundreds * 100)) / 10;
 
-        int units = numericalValue % 10;
+        int ones = numericalValue % 10;
 
 
         result = "";
-        if ( decimal == 1 ) result =  allCombination[2] [hundreds] + numbers10to19[units];
-        else result =  allCombination[2] [hundreds] +  allCombination[1][decimal] +  allCombination[0] [units];
+        if ( tens == 1 ) result =  allCombination[2] [hundreds] + numbers10to19[ones];
+        else result =  allCombination[2] [hundreds] +  allCombination[1][tens] +  allCombination[0] [ones];
 
         // формируем окончания в единицах
         if (index == 2) {
-            if (units == 1 && decimal != 1) result = result + "на ";
-            else if (units == 2 & decimal != 1) result = result + "е ";
-            if (units > 1 && decimal != 1) result = result + " ";
+            if (ones == 1 && tens != 1) result = result + "на ";
+            else if (ones == 2 & tens != 1) result = result + "е ";
+            if (ones > 1 && tens != 1) result = result + " ";
         }
         else {
-            if (units == 1 && decimal != 1) result = result + "ин ";
-            if (units == 2 & decimal != 1) {
+            if (ones == 1 && tens != 1) result = result + "ин ";
+            if (ones == 2 & tens != 1) {
                 result = result + "а ";
             }
-            else if (units != 0 & decimal != 1) result = result + " ";
+            else if (ones != 0 & tens != 1) result = result + " ";
         }
 
-        // дописываем степень числа
-
-        int indexA = 0;
+        // Получаем группу числа (тысячи,миллоны ...)
+        int indexOfGroup = 0;
         if (numericalValue != 0 ) {
-            if (units == 0 || decimal == 1 )
-                indexA = 1;
-            else if (units == 1)
-                indexA = 2;
-            else if (units > 1 & units < 5)
-                indexA = 3;
+            if (ones == 0 || tens == 1 )
+                indexOfGroup = 1;
+            else if (ones == 1)
+                indexOfGroup = 2;
+            else if (ones > 1 & ones < 5)
+                indexOfGroup = 3;
             else
-                indexA = 4;
+                indexOfGroup = 4;
         }
-        result = result + textDigit[indexA][index];
+        result = result + textDigit[indexOfGroup][index];
         return result;
     }
 }
