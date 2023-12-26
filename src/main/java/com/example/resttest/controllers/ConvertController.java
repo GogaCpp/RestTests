@@ -80,6 +80,7 @@ public class ConvertController {
             LocalDateTime t=LocalDateTime.now();
             Result result=new Result(type,oldValue,"Error");
             resultRepository.save(result);
+            value="Error";
         }
 
         return "Type: " + type + "\nResult: " + value;
