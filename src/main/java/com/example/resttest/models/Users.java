@@ -18,11 +18,6 @@ public class Users {
     private String password;
     private String role;
 
-    public Users(String username, String password){
-        this.username=username;
-        this.password=password;
-    }
-
     public Users(String username, String password, String roleUser) {
         this.username=username;
         this.password=password;

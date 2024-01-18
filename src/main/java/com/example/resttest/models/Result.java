@@ -21,12 +21,12 @@ public class Result {
     private String type;
     private String first;
     private String second;
-    private LocalDateTime time;
+    private LocalDateTime time=LocalDateTime.now();
 
     public Result(String type,String first,String second){
         this.type=type;
         this.first=first;
         this.second=second;
-        this.time=LocalDateTime.now();
+
     }
 }

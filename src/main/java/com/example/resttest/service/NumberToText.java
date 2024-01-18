@@ -1,4 +1,4 @@
-package com.example.resttest;
+package com.example.resttest.service;
 
 public class NumberToText {
 

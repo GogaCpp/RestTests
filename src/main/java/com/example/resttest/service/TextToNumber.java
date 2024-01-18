@@ -1,4 +1,4 @@
-package com.example.resttest;
+package com.example.resttest.service;
 
 import lombok.extern.slf4j.Slf4j;
 
